@@ -1,7 +1,7 @@
 program CustomSchemeBrowser;
 
 uses
-  Vcl.Forms,
+  Forms,
   uCustomSchemeBrowser in 'uCustomSchemeBrowser.pas' {MainForm};
 
 {$R *.res}

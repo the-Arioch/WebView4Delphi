@@ -11,28 +11,25 @@ unit AddHostObject_TLB;
 // manual modifications will be lost.
 // ************************************************************************ //
 
-// $Rev: 98336 $
-// File generated on 01/12/2021 14:55:28 from Type Library described below.
+// $Rev: 8291 $
+// File generated on 17.01.2025 18:39:42 from Type Library described below.
 
 // ************************************************************************  //
-// Type Lib: C:\Users\usuario\Documents\Embarcadero\Studio\Projects\WebView4Delphi\demos\Delphi_VCL\AddHostObject\AddHostObject (1)
+// Type Lib: D:\DelphiLibs\WebView4Delphi\demos\Delphi_VCL\AddHostObject\AddHostObject.tlb (1)
 // LIBID: {34804AF9-49F9-4911-A2FD-5A6A49C6E1AB}
 // LCID: 0
 // Helpfile:
 // HelpString:
 // DepndLst:
 //   (1) v2.0 stdole, (C:\Windows\SysWOW64\stdole2.tlb)
-// SYS_KIND: SYS_WIN32
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers.
 {$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
 {$VARPROPSETTER ON}
-{$ALIGN 4}
-
 interface
 
-uses Winapi.Windows, System.Classes, System.Variants, System.Win.StdVCL, Vcl.Graphics, Vcl.OleServer, Winapi.ActiveX;
+uses Windows, ActiveX, Classes, Graphics, StdVCL, Variants;
 
 
 // *********************************************************************//
@@ -116,7 +113,7 @@ type
 
 implementation
 
-uses System.Win.ComObj;
+uses ComObj;
 
 class function CoSampleHostObjectClass.Create: ISampleHostObjectClass;
 begin
@@ -129,4 +126,3 @@ begin
 end;
 
 end.
-

@@ -1,7 +1,7 @@
 program AddHostObject;
 
 uses
-  Vcl.Forms,
+  Forms,
   uMainForm in 'uMainForm.pas' {MainForm},
   AddHostObject_TLB in 'AddHostObject_TLB.pas',
   uSampleHostObjectClass in 'uSampleHostObjectClass.pas' {SampleHostObjectClass: CoClass};
