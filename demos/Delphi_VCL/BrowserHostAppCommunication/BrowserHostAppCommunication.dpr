@@ -1,7 +1,7 @@
 program BrowserHostAppCommunication;
 
 uses
-  Vcl.Forms,
+  {Vcl.}Forms,
   uMainForm in 'uMainForm.pas' {MainForm};
 
 {$R *.res}

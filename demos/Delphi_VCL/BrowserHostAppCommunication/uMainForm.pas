@@ -3,8 +3,8 @@ unit uMainForm;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs, ExtCtrls, ComCtrls, StdCtrls,
   uWVBrowser, uWVWinControl, uWVWindowParent, uWVTypes, uWVConstants, uWVTypeLibrary,
   uWVLibFunctions, uWVLoader, uWVInterfaces, uWVCoreWebView2Args,
   uWVBrowserBase, uWVCoreWebView2SharedBuffer;
@@ -97,7 +97,7 @@ end;
 
 procedure TMainForm.PostSharedBufferBtnClick(Sender: TObject);
 var
-  TempSrcBuffer : TBytes;
+  TempSrcBuffer : UTF8String; // TBytes;
   TempDstBuffer : PByte;
   TempSharedBufferItf : ICoreWebView2SharedBuffer;
   TempText : string;
@@ -113,8 +113,9 @@ begin
   // Convert the text to UTF8
   TempText := trim(SharedBufferEdt.Text);
   SetLength(TempSrcBuffer, CUSTOM_SHARED_BUFFER_SIZE);
-  ZeroMemory(TempSrcBuffer, CUSTOM_SHARED_BUFFER_SIZE);
-  UTF8Encode(TempText, TempSrcBuffer);
+  ZeroMemory(@TempSrcBuffer[1], CUSTOM_SHARED_BUFFER_SIZE);
+//  UTF8Encode(TempText, TempSrcBuffer);
+  TempSrcBuffer := UTF8Encode(TempText);
   TempDstBuffer := FSharedBuffer.Buffer;
   ZeroMemory(TempDstBuffer, CUSTOM_SHARED_BUFFER_SIZE);
   // Copy the UTF8 data to the shared buffer
