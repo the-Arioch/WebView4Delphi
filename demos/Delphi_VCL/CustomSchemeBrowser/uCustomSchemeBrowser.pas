@@ -204,7 +204,12 @@ begin
     WVBrowser1.NotifyParentWindowPositionChanged;
 end;
 
-procedure GlobalWebView2Loader_OnGetCustomSchemes(Sender: TObject; var aCustomSchemes: TWVCustomSchemeInfoArray);
+type TConfig = class
+  private class procedure GlobalWebView2Loader_OnGetCustomSchemes
+     (Sender: TObject; var aCustomSchemes: TWVCustomSchemeInfoArray); {$IFDEF DELPHI16_UP}static;{$EndIf}
+end;
+
+class procedure TConfig.GlobalWebView2Loader_OnGetCustomSchemes(Sender: TObject; var aCustomSchemes: TWVCustomSchemeInfoArray);
 begin
   // We can register multiple schemes but this demo only register 1
   SetLength(aCustomSchemes, 1);
@@ -218,7 +223,7 @@ end;
 initialization
   GlobalWebView2Loader                    := TWVLoader.Create(nil);
   GlobalWebView2Loader.UserDataFolder     := ExtractFileDir(Application.ExeName) + '\CustomCache';
-  GlobalWebView2Loader.OnGetCustomSchemes := GlobalWebView2Loader_OnGetCustomSchemes;
+  GlobalWebView2Loader.OnGetCustomSchemes := TConfig.GlobalWebView2Loader_OnGetCustomSchemes;
   GlobalWebView2Loader.StartWebView2;
 
 end.
