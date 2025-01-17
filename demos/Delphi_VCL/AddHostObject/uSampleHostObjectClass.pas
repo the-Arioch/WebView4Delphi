@@ -86,7 +86,7 @@ var
 begin
   TempParams := nil;
   // TODO: Fix access violation when we use an empty TGUID
-  Param1.Invoke(DISPID_UNKNOWN, TGUID.Empty, LOCALE_USER_DEFAULT, DISPATCH_METHOD, TempParams, nil, nil, nil);
+  Param1.Invoke(DISPID_UNKNOWN, GUID_NULL {TGUID.Empty}, LOCALE_USER_DEFAULT, DISPATCH_METHOD, TempParams, nil, nil, nil);
 end;
 
 initialization
