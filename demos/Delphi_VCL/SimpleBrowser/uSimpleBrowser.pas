@@ -17,6 +17,12 @@ uses
   uWVBrowserBase, Menus;
 
 type
+  TPanel = class(ExtCtrls.TPanel)
+  private
+    procedure WMMove(var aMessage : TWMMove); message WM_MOVE;
+    procedure WMMoving(var aMessage : TMessage); message WM_MOVING;
+  end;
+
   TMainForm = class(TForm)
     WVWindowParent1: TWVWindowParent;
     Timer1: TTimer;
@@ -139,6 +145,18 @@ begin
 
   if (WVBrowser1 <> nil) then
     WVBrowser1.NotifyParentWindowPositionChanged;
+end;
+
+{ TPanel }
+
+procedure TPanel.WMMove(var aMessage: TWMMove);
+begin
+  inherited;
+end;
+
+procedure TPanel.WMMoving(var aMessage: TMessage);
+begin
+  inherited;
 end;
 
 initialization
