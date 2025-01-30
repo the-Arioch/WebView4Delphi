@@ -7,6 +7,7 @@ unit uWVCoreWebView2WindowFeatures;
 interface
 
 uses
+  uWVMiscFunctions,
   uWVTypeLibrary, uWVTypes;
 
 type
@@ -39,6 +40,7 @@ type
   TCoreWebView2WindowFeatures = class
     protected
       FBaseIntf : ICoreWebView2WindowFeatures;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function GetInitialized : boolean;
       function GetHasPosition : boolean;
@@ -53,7 +55,8 @@ type
       function GetShouldDisplayScrollBars : boolean;
 
     public
-      constructor Create(const aBaseIntf : ICoreWebView2WindowFeatures); reintroduce;
+      constructor Create(const aBaseIntf : ICoreWebView2WindowFeatures); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aBaseIntf : ICoreWebView2WindowFeatures); reintroduce; overload;
       destructor  Destroy; override;
       procedure   CopyToRecord(var aWindowFeatures : TWVWindowFeatures);
 
@@ -150,6 +153,14 @@ uses
   ActiveX;
   {$ENDIF}
 
+constructor TCoreWebView2WindowFeatures.Create(var Guard: IWVFreeGuard;
+  const aBaseIntf: ICoreWebView2WindowFeatures);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+
+  Create(aBaseIntf);
+end;
+
 constructor TCoreWebView2WindowFeatures.Create(const aBaseIntf: ICoreWebView2WindowFeatures);
 begin
   inherited Create;
@@ -159,7 +170,8 @@ end;
 
 destructor TCoreWebView2WindowFeatures.Destroy;
 begin
-  FBaseIntf := nil;
+//  FBaseIntf := nil;  no need, TObject.CleanupInstance would do
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
 
   inherited Destroy;
 end;

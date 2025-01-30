@@ -3,8 +3,8 @@ unit uChildForm;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs,
   uWVBrowser, uWVWinControl, uWVWindowParent, uWVTypes, uWVTypeLibrary,
   uWVBrowserBase, uWVCoreWebView2Args, uWVCoreWebView2Deferral;
 
@@ -53,22 +53,20 @@ end;
 
 procedure TChildForm.FormDestroy(Sender: TObject);
 begin
-  if assigned(FDeferral) then
-    FreeAndNil(FDeferral);
-
-  if assigned(FArgs) then
-    FreeAndNil(FArgs);
+  FreeAndNil(FDeferral);
+  FreeAndNil(FArgs);
 end;
 
 procedure TChildForm.FormShow(Sender: TObject);
 var
   TempWindowFeatures : TCoreWebView2WindowFeatures;
+  TempFreeGuard: IWVFreeGuard;
 begin
   TempWindowFeatures := nil;
 
   if assigned(FArgs) then
-    try
-      TempWindowFeatures := TCoreWebView2WindowFeatures.Create(FArgs.WindowFeatures);
+    begin
+      TempWindowFeatures := TCoreWebView2WindowFeatures.Create(TempFreeGuard, FArgs.WindowFeatures);
 
       if TempWindowFeatures.HasPosition then
         begin
@@ -81,9 +79,6 @@ begin
           WVBrowser1.ResizeFormWidthTo(TempWindowFeatures.width);
           WVBrowser1.ResizeFormHeightTo(TempWindowFeatures.height);
         end;
-    finally
-      if assigned(TempWindowFeatures) then
-        FreeAndNil(TempWindowFeatures);
     end;
 
   WVBrowser1.CreateBrowser(WVWindowParent1.Handle);
