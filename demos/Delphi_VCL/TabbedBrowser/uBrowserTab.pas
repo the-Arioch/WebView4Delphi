@@ -3,8 +3,8 @@ unit uBrowserTab;
 interface
 
 uses
-  Winapi.Windows, System.Classes, Winapi.Messages, Vcl.ComCtrls, Vcl.Controls,
-  Vcl.Forms, System.SysUtils, uBrowserFrame, uWVCoreWebView2Args;
+  Windows, Classes, Messages, ComCtrls, Controls,
+  Forms, SysUtils, uBrowserFrame, uWVCoreWebView2Args;
 
 type
   TBrowserTab = class(TTabSheet)
