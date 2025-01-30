@@ -3,8 +3,8 @@ unit uMainForm;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics,
+  Controls, Forms, Dialogs, ComCtrls, Buttons, ExtCtrls,
   uWVLoader, uWVCoreWebView2Args;
 
 const
@@ -143,7 +143,13 @@ begin
     end;
 end;
 
-procedure GlobalWebView2Loader_OnEnvironmentCreated(Sender: TObject);
+type TConfig = class
+  private class procedure GlobalWebView2Loader_OnEnvironmentCreated(Sender: TObject);
+     {$IFDEF DELPHI16_UP}static;{$EndIf}
+end;
+
+
+class procedure TConfig.GlobalWebView2Loader_OnEnvironmentCreated(Sender: TObject);
 begin
   if (MainForm <> nil) and MainForm.HandleAllocated then
     PostMessage(MainForm.Handle, WV_INITIALIZED, 0, 0);
@@ -152,7 +158,7 @@ end;
 initialization
   GlobalWebView2Loader                      := TWVLoader.Create(nil);
   GlobalWebView2Loader.UserDataFolder       := ExtractFileDir(Application.ExeName) + '\CustomCache';
-  GlobalWebView2Loader.OnEnvironmentCreated := GlobalWebView2Loader_OnEnvironmentCreated;
+  GlobalWebView2Loader.OnEnvironmentCreated := TConfig.GlobalWebView2Loader_OnEnvironmentCreated;
   GlobalWebView2Loader.StartWebView2;
 
 end.
