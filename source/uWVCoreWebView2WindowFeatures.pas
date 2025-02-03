@@ -7,6 +7,7 @@ unit uWVCoreWebView2WindowFeatures;
 interface
 
 uses
+  uWVMiscFunctions,
   uWVTypeLibrary, uWVTypes;
 
 type
