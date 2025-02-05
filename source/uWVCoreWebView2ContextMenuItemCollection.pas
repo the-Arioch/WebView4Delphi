@@ -7,6 +7,7 @@ unit uWVCoreWebView2ContextMenuItemCollection;
 interface
 
 uses
+  uWVMiscFunctions,
   uWVTypeLibrary, uWVTypes;
 
 type
@@ -114,7 +115,7 @@ constructor TCoreWebView2ContextMenuItemCollection.Create(
   const aBaseIntf: ICoreWebView2ContextMenuItemCollection);
 begin
   LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
-  Create(aArgs);
+  Create(aBaseIntf);
 end;
 
 constructor TCoreWebView2ContextMenuItemCollection.Create(const aBaseIntf: ICoreWebView2ContextMenuItemCollection);
