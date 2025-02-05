@@ -12,7 +12,7 @@ uses
   {$ELSE}
   ActiveX,
   {$ENDIF}
-  uWVMiscFunctions,
+  uWVMiscFunctions, uWVCoreWebView2Args,
   uWVTypeLibrary, uWVTypes;
 
 type
@@ -40,6 +40,7 @@ type
     public
       constructor Create(const aBaseIntf : ICoreWebView2WebResourceRequest); reintroduce; overload;
       constructor Create(var Guard: IWVFreeGuard; const aBaseIntf : ICoreWebView2WebResourceRequest); overload;
+      constructor Create(var Guard: IWVFreeGuard; const aBase: TCoreWebView2WebResourceResponseReceivedEventArgs); overload;
       destructor  Destroy; override;
 
       /// <summary>
@@ -114,19 +115,24 @@ type
 
 implementation
 
-constructor TCoreWebView2WebResourceRequestRef.Create(const aBaseIntf: ICoreWebView2WebResourceRequest);
+constructor TCoreWebView2WebResourceRequestRef.Create(var Guard: IWVFreeGuard;
+  const aBase: TCoreWebView2WebResourceResponseReceivedEventArgs);
 begin
-  inherited Create;
-
-  FBaseIntf := aBaseIntf;
+  Create(Guard, aBase.Request);
 end;
 
 constructor TCoreWebView2WebResourceRequestRef.Create(var Guard: IWVFreeGuard;
   const aBaseIntf: ICoreWebView2WebResourceRequest);
 begin
   LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
-
   Create(aBaseIntf);
+end;
+
+constructor TCoreWebView2WebResourceRequestRef.Create(const aBaseIntf: ICoreWebView2WebResourceRequest);
+begin
+  inherited Create;
+
+  FBaseIntf := aBaseIntf;
 end;
 
 destructor TCoreWebView2WebResourceRequestRef.Destroy;
