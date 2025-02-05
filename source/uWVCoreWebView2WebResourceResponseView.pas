@@ -12,6 +12,7 @@ uses
   {$ELSE}
   ActiveX,
   {$ENDIF}
+  uWVCoreWebView2Args, uWVMiscFunctions, // #81
   uWVTypeLibrary, uWVTypes;
 
 type
@@ -26,6 +27,7 @@ type
   TCoreWebView2WebResourceResponseView = class
     protected
       FBaseIntf : ICoreWebView2WebResourceResponseView;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function  GetInitialized : boolean;
       function  GetHeaders : ICoreWebView2HttpResponseHeaders;
@@ -33,7 +35,9 @@ type
       function  GetReasonPhrase : wvstring;
 
     public
-      constructor Create(const aBaseIntf : ICoreWebView2WebResourceResponseView); reintroduce;
+      constructor Create(const aBaseIntf : ICoreWebView2WebResourceResponseView); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aBaseIntf : ICoreWebView2WebResourceResponseView); overload;
+      constructor Create(var Guard: IWVFreeGuard; const aBase: TCoreWebView2WebResourceResponseReceivedEventArgs); overload;
       destructor  Destroy; override;
       /// <summary>
       /// <para>Get the response content asynchronously. The handler will receive the
@@ -87,6 +91,19 @@ type
 
 implementation
 
+constructor TCoreWebView2WebResourceResponseView.Create(var Guard: IWVFreeGuard;
+  const aBase: TCoreWebView2WebResourceResponseReceivedEventArgs);
+begin
+  Create(Guard, aBase.Response);
+end;
+
+constructor TCoreWebView2WebResourceResponseView.Create(var Guard: IWVFreeGuard;
+  const aBaseIntf: ICoreWebView2WebResourceResponseView);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+  Create(aBaseIntf);
+end;
+
 constructor TCoreWebView2WebResourceResponseView.Create(const aBaseIntf: ICoreWebView2WebResourceResponseView);
 begin
   inherited Create;
@@ -97,6 +114,8 @@ end;
 destructor TCoreWebView2WebResourceResponseView.Destroy;
 begin
   FBaseIntf := nil;
+
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
 
   inherited Destroy;
 end;
