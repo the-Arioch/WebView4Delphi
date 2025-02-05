@@ -6050,11 +6050,12 @@ end;
 
 function TWVBrowserBase.GetInitialized: boolean;
 begin
-  Result := (FCoreWebView2Environment <> nil) and FCoreWebView2Environment.Initialized and
-            (FCoreWebView2            <> nil) and FCoreWebView2.Initialized            and
-            (FCoreWebView2Settings    <> nil) and FCoreWebView2Settings.Initialized    and
-            (FCoreWebView2Controller  <> nil) and FCoreWebView2Controller.Initialized  and
-            (not(FUseCompositionController) or ((FCoreWebView2CompositionController <> nil) and FCoreWebView2CompositionController.Initialized));
+  Result := (nil <> Self {#81}) and
+    (FCoreWebView2Environment <> nil) and FCoreWebView2Environment.Initialized and
+    (FCoreWebView2            <> nil) and FCoreWebView2.Initialized            and
+    (FCoreWebView2Settings    <> nil) and FCoreWebView2Settings.Initialized    and
+    (FCoreWebView2Controller  <> nil) and FCoreWebView2Controller.Initialized  and
+    (not(FUseCompositionController) or ((FCoreWebView2CompositionController <> nil) and FCoreWebView2CompositionController.Initialized));
 end;
 
 function TWVBrowserBase.GetZoomControlEnabled: boolean;
