@@ -1245,13 +1245,15 @@ type
   TCoreWebView2WebResourceResponseReceivedEventArgs = class
     protected
       FBaseIntf : ICoreWebView2WebResourceResponseReceivedEventArgs;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function  GetInitialized : boolean;
       function  GetRequest : ICoreWebView2WebResourceRequest;
       function  GetResponse : ICoreWebView2WebResourceResponseView;
 
     public
-      constructor Create(const aArgs: ICoreWebView2WebResourceResponseReceivedEventArgs); reintroduce;
+      constructor Create(const aArgs: ICoreWebView2WebResourceResponseReceivedEventArgs); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aArgs: ICoreWebView2WebResourceResponseReceivedEventArgs); overload;
       destructor  Destroy; override;
 
       /// <summary>
@@ -3554,6 +3556,14 @@ end;
 
 // TCoreWebView2WebResourceResponseReceivedEventArgs
 
+constructor TCoreWebView2WebResourceResponseReceivedEventArgs.Create(
+  var Guard: IWVFreeGuard;
+  const aArgs: ICoreWebView2WebResourceResponseReceivedEventArgs);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+  Create(aArgs);
+end;
+
 constructor TCoreWebView2WebResourceResponseReceivedEventArgs.Create(const aArgs: ICoreWebView2WebResourceResponseReceivedEventArgs);
 begin
   inherited Create;
@@ -3563,6 +3573,8 @@ end;
 
 destructor TCoreWebView2WebResourceResponseReceivedEventArgs.Destroy;
 begin
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
+
   FBaseIntf := nil;
 
   inherited Destroy;
