@@ -441,7 +441,7 @@ end;
 
 function TCoreWebView2Settings.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2Settings.GetIsBuiltInErrorPageEnabled : boolean;

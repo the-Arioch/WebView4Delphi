@@ -81,7 +81,7 @@ end;
 
 function TCoreWebView2BasicAuthenticationResponse.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2BasicAuthenticationResponse.GetUserName : wvstring;

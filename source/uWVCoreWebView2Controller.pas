@@ -364,7 +364,7 @@ end;
 
 function TCoreWebView2Controller.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 procedure TCoreWebView2Controller.RemoveAllEvents;

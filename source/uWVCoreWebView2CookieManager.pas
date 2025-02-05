@@ -116,7 +116,7 @@ end;
 
 function TCoreWebView2CookieManager.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2CookieManager.CreateCookie(const aName, aValue, aDomain, aPath: wvstring) : ICoreWebView2Cookie;
