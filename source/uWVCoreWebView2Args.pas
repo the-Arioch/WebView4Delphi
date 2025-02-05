@@ -1018,12 +1018,14 @@ type
   TCoreWebView2SourceChangedEventArgs = class
     protected
       FBaseIntf : ICoreWebView2SourceChangedEventArgs;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function GetInitialized : boolean;
       function GetIsNewDocument : boolean;
 
     public
-      constructor Create(const aArgs: ICoreWebView2SourceChangedEventArgs); reintroduce;
+      constructor Create(const aArgs: ICoreWebView2SourceChangedEventArgs); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aArgs: ICoreWebView2SourceChangedEventArgs); overload;
       destructor  Destroy; override;
 
       /// <summary>
@@ -3265,6 +3267,13 @@ end;
 
 // TCoreWebView2SourceChangedEventArgs
 
+constructor TCoreWebView2SourceChangedEventArgs.Create(var Guard: IWVFreeGuard;
+  const aArgs: ICoreWebView2SourceChangedEventArgs);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+  Create(aArgs);
+end;
+
 constructor TCoreWebView2SourceChangedEventArgs.Create(const aArgs: ICoreWebView2SourceChangedEventArgs);
 begin
   inherited Create;
@@ -3274,6 +3283,8 @@ end;
 
 destructor TCoreWebView2SourceChangedEventArgs.Destroy;
 begin
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
+
   FBaseIntf := nil;
 
   inherited Destroy;
