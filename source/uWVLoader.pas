@@ -1929,7 +1929,7 @@ end;
 
 function TWVLoader.GetInitialized : boolean;
 begin
-  Result := (FStatus = wvlsInitialized);
+  Result := (nil <> Self {#81}) and (FStatus = wvlsInitialized);
 end;
 
 function TWVLoader.GetInitializationError : boolean;

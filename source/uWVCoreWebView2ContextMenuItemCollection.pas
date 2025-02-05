@@ -20,13 +20,15 @@ type
   TCoreWebView2ContextMenuItemCollection = class
     protected
       FBaseIntf : ICoreWebView2ContextMenuItemCollection;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function GetInitialized : boolean;
       function GetCount : cardinal;
       function GetValueAtIndex(index : cardinal) : ICoreWebView2ContextMenuItem;
 
     public
-      constructor Create(const aBaseIntf : ICoreWebView2ContextMenuItemCollection); reintroduce;
+      constructor Create(const aBaseIntf : ICoreWebView2ContextMenuItemCollection); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aBaseIntf: ICoreWebView2ContextMenuItemCollection); overload;
       destructor  Destroy; override;
       /// <summary>
       /// Removes the `ContextMenuItem` at the specified index.
@@ -107,6 +109,14 @@ uses
   {$ENDIF}
   uWVCoreWebView2ContextMenuItem;
 
+constructor TCoreWebView2ContextMenuItemCollection.Create(
+  var Guard: IWVFreeGuard;
+  const aBaseIntf: ICoreWebView2ContextMenuItemCollection);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+  Create(aArgs);
+end;
+
 constructor TCoreWebView2ContextMenuItemCollection.Create(const aBaseIntf: ICoreWebView2ContextMenuItemCollection);
 begin
   inherited Create;
@@ -116,6 +126,8 @@ end;
 
 destructor TCoreWebView2ContextMenuItemCollection.Destroy;
 begin
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
+
   FBaseIntf := nil;
 
   inherited Destroy;
@@ -123,7 +135,7 @@ end;
 
 function TCoreWebView2ContextMenuItemCollection.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ContextMenuItemCollection.GetCount : cardinal;

@@ -114,7 +114,7 @@ end;
 
 function TCoreWebView2BrowserExtension.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2BrowserExtension.GetID : wvstring;

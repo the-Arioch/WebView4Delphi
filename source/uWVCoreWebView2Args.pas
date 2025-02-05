@@ -350,6 +350,7 @@ type
     protected
       FBaseIntf  : ICoreWebView2NavigationCompletedEventArgs;
       FBaseIntf2 : ICoreWebView2NavigationCompletedEventArgs2;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function GetInitialized : boolean;
       function GetIsSuccess : boolean;
@@ -360,7 +361,8 @@ type
       procedure InitializeFields;
 
     public
-      constructor Create(const aArgs: ICoreWebView2NavigationCompletedEventArgs); reintroduce;
+      constructor Create(const aArgs: ICoreWebView2NavigationCompletedEventArgs); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aArgs: ICoreWebView2NavigationCompletedEventArgs); overload;
       destructor  Destroy; override;
 
       /// <summary>
@@ -1634,6 +1636,7 @@ type
   TCoreWebView2ContextMenuRequestedEventArgs = class
     protected
       FBaseIntf : ICoreWebView2ContextMenuRequestedEventArgs;
+      FFreeGuard : IWVPrematureGuardedFree;  // #81
 
       function  GetInitialized : boolean;
       function  GetMenuItems : ICoreWebView2ContextMenuItemCollection;
@@ -1647,7 +1650,8 @@ type
       procedure SetHandled(aValue : boolean);
 
     public
-      constructor Create(const aArgs: ICoreWebView2ContextMenuRequestedEventArgs); reintroduce;
+      constructor Create(const aArgs: ICoreWebView2ContextMenuRequestedEventArgs); reintroduce; overload;
+      constructor Create(var Guard: IWVFreeGuard; const aArgs: ICoreWebView2ContextMenuRequestedEventArgs); overload;
       destructor  Destroy; override;
 
       /// <summary>
@@ -2237,7 +2241,7 @@ end;
 
 function TCoreWebView2AcceleratorKeyPressedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2AcceleratorKeyPressedEventArgs.GetKeyEventKind : TWVKeyEventKind;
@@ -2375,7 +2379,7 @@ end;
 
 function TCoreWebView2ContentLoadingEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ContentLoadingEventArgs.GetIsErrorPage : boolean;
@@ -2427,7 +2431,7 @@ end;
 
 function TCoreWebView2DevToolsProtocolEventReceivedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2DevToolsProtocolEventReceivedEventArgs.GetParameterObjectAsJson : wvstring;
@@ -2478,7 +2482,7 @@ end;
 
 function TCoreWebView2MoveFocusRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2MoveFocusRequestedEventArgs.GetReason : TWVMoveFocusReason;
@@ -2509,11 +2513,19 @@ end;
 
 // TCoreWebView2NavigationCompletedEventArgs
 
+constructor TCoreWebView2NavigationCompletedEventArgs.Create(
+  var Guard: IWVFreeGuard;
+  const aArgs: ICoreWebView2NavigationCompletedEventArgs);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+  Create(aArgs);
+end;
+
 constructor TCoreWebView2NavigationCompletedEventArgs.Create(const aArgs: ICoreWebView2NavigationCompletedEventArgs);
 begin
   inherited Create;
 
-  InitializeFields;
+//  InitializeFields;
 
   FBaseIntf := aArgs;
 
@@ -2523,7 +2535,8 @@ end;
 
 destructor TCoreWebView2NavigationCompletedEventArgs.Destroy;
 begin
-  InitializeFields;
+//  InitializeFields;
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
 
   inherited Destroy;
 end;
@@ -2536,7 +2549,7 @@ end;
 
 function TCoreWebView2NavigationCompletedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2NavigationCompletedEventArgs.GetIsSuccess : boolean;
@@ -2612,7 +2625,7 @@ end;
 
 function TCoreWebView2NavigationStartingEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2NavigationStartingEventArgs.GetURI : wvstring;
@@ -2751,7 +2764,7 @@ end;
 
 function TCoreWebView2NewWindowRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2NewWindowRequestedEventArgs.GetURI : wvstring;
@@ -2913,7 +2926,7 @@ end;
 
 function TCoreWebView2PermissionRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2PermissionRequestedEventArgs.GetURI : wvstring;
@@ -3044,7 +3057,7 @@ end;
 
 function TCoreWebView2ProcessFailedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ProcessFailedEventArgs.GetProcessFailedKind : TWVProcessFailedKind;
@@ -3146,7 +3159,7 @@ end;
 
 function TCoreWebView2ScriptDialogOpeningEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ScriptDialogOpeningEventArgs.GetURI : wvstring;
@@ -3268,7 +3281,7 @@ end;
 
 function TCoreWebView2SourceChangedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2SourceChangedEventArgs.GetIsNewDocument : boolean;
@@ -3310,7 +3323,7 @@ end;
 
 function TCoreWebView2WebMessageReceivedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2WebMessageReceivedEventArgs.GetSource : wvstring;
@@ -3413,7 +3426,7 @@ end;
 
 function TCoreWebView2WebResourceRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2WebResourceRequestedEventArgs.GetRequest : ICoreWebView2WebResourceRequest;
@@ -3502,7 +3515,7 @@ end;
 
 function TCoreWebView2BrowserProcessExitedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2BrowserProcessExitedEventArgs.GetBrowserProcessExitKind : TWVBrowserProcessExitKind;
@@ -3546,7 +3559,7 @@ end;
 
 function TCoreWebView2WebResourceResponseReceivedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2WebResourceResponseReceivedEventArgs.GetRequest : ICoreWebView2WebResourceRequest;
@@ -3594,7 +3607,7 @@ end;
 
 function TCoreWebView2DOMContentLoadedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2DOMContentLoadedEventArgs.GetNavigationID : uint64;
@@ -3626,7 +3639,7 @@ end;
 
 function TCoreWebView2FrameCreatedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2FrameCreatedEventArgs.GetFrame : ICoreWebView2Frame;
@@ -3661,7 +3674,7 @@ end;
 
 function TCoreWebView2DownloadStartingEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2DownloadStartingEventArgs.GetDownloadOperation : ICoreWebView2DownloadOperation;
@@ -3760,7 +3773,7 @@ end;
 
 function TCoreWebView2ClientCertificateRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ClientCertificateRequestedEventArgs.GetHost : wvstring;
@@ -3904,7 +3917,7 @@ end;
 
 function TCoreWebView2BasicAuthenticationRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2BasicAuthenticationRequestedEventArgs.GetUri : wvstring;
@@ -3981,6 +3994,14 @@ end;
 
 // TCoreWebView2ContextMenuRequestedEventArgs
 
+constructor TCoreWebView2ContextMenuRequestedEventArgs.Create(
+  var Guard: IWVFreeGuard;
+  const aArgs: ICoreWebView2ContextMenuRequestedEventArgs);
+begin
+  LinkGuardedFree(Self, Guard, FFreeGuard);  // #81
+  Create(aArgs);
+end;
+
 constructor TCoreWebView2ContextMenuRequestedEventArgs.Create(const aArgs: ICoreWebView2ContextMenuRequestedEventArgs);
 begin
   inherited Create;
@@ -3992,12 +4013,14 @@ destructor TCoreWebView2ContextMenuRequestedEventArgs.Destroy;
 begin
   FBaseIntf := nil;
 
+  UnlinkGuardedFree(Self, FFreeGuard);  // #81
+
   inherited Destroy;
 end;
 
 function TCoreWebView2ContextMenuRequestedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ContextMenuRequestedEventArgs.GetMenuItems : ICoreWebView2ContextMenuItemCollection;
@@ -4106,7 +4129,7 @@ end;
 
 function TCoreWebView2ServerCertificateErrorDetectedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ServerCertificateErrorDetectedEventArgs.GetErrorStatus : TWVWebErrorStatus;
@@ -4197,7 +4220,7 @@ end;
 
 function TCoreWebView2LaunchingExternalUriSchemeEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2LaunchingExternalUriSchemeEventArgs.GetUri : wvstring;
@@ -4286,7 +4309,7 @@ end;
 
 function TCoreWebView2NonClientRegionChangedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2NonClientRegionChangedEventArgs.GetRegionKind : TWVNonClientRegionKind;
@@ -4319,7 +4342,7 @@ end;
 
 function TCoreWebView2NotificationReceivedEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2NotificationReceivedEventArgs.GetSenderOrigin : wvstring;
@@ -4397,7 +4420,7 @@ end;
 
 function TCoreWebView2SaveAsUIShowingEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2SaveAsUIShowingEventArgs.GetContentMimeType : wvstring;
@@ -4530,7 +4553,7 @@ end;
 
 function TCoreWebView2SaveFileSecurityCheckStartingEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2SaveFileSecurityCheckStartingEventArgs.GetCancelSave : boolean;
@@ -4640,7 +4663,7 @@ end;
 
 function TCoreWebView2ScreenCaptureStartingEventArgs.GetInitialized : boolean;
 begin
-  Result := assigned(FBaseIntf);
+  Result := (nil <> Self {#81}) and assigned(FBaseIntf);
 end;
 
 function TCoreWebView2ScreenCaptureStartingEventArgs.GetCancel : boolean;
